@@ -18,7 +18,7 @@ export class FacebookStrategy extends Strategy {
         super();
     }
 
-    async authenticate(req: Request, options?: any) {
+    async authenticate(req: Request) {
             
     }
 }
