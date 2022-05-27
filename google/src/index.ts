@@ -14,6 +14,7 @@ export interface IGoogleOptions {
 }
 
 export class GoogleStrategy extends Strategy {
+    public readonly name = "google"
     private readonly options: IGoogleOptions;
     private readonly client: OAuth2Client;
     private readonly verifyCb: VerifyCallback;
