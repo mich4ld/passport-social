@@ -1,11 +1,8 @@
-import { Request } from 'express';
-import { ParamsDictionary } from 'express-serve-static-core';
 import { Strategy } from 'passport-strategy';
-import { ParsedQs } from 'qs';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
+import { Request } from 'express';
 
-type ExpressReq = Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>;
-export type ExtractTokenID = (req: ExpressReq) => string;
+export type ExtractTokenID = (req: Request) => string;
 type VerifyCallback = (payload: TokenPayload, verified: any) => any;
 
 export interface IGoogleOptions {
@@ -36,7 +33,7 @@ export class GoogleStrategy extends Strategy {
         })
     }
 
-    async authenticate(req: ExpressReq) {
+    async authenticate(req: Request) {
         const idToken = this.options.tokenFromRequest ? this.options.tokenFromRequest(req) : req.body.idToken;
         
         try {
