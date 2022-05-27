@@ -1,6 +1,6 @@
 {
   "name": "@mich4l/passport-google",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Passport strategy for Google",
   "keywords": [
     "passport",
