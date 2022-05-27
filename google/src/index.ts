@@ -20,6 +20,10 @@ export class GoogleStrategy extends Strategy {
     private readonly verifyCb: VerifyCallback;
 
     constructor(options: IGoogleOptions, verifyCb: VerifyCallback) {
+        if (!options) {
+            throw new TypeError('Options argument is required for GoogleStrategy');
+        }
+
         if (!options.clientID) {
             throw new TypeError('GoogleStrategy requires clientID');
         }
