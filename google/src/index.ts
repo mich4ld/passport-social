@@ -5,12 +5,11 @@ import { ParsedQs } from 'qs';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
 
 type ExpressReq = Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>;
-type ExtractTokenID = (req: ExpressReq) => string;
-type VerifyCallback = (payload: TokenPayload) => any;
+export type ExtractTokenID = (req: ExpressReq) => string;
+type VerifyCallback = (payload: TokenPayload, verified: any) => any;
 
 export interface IGoogleOptions {
     clientID: string;
-    clientSecret: string;
     tokenFromRequest?: ExtractTokenID;
 }
 
@@ -19,20 +18,15 @@ export class GoogleStrategy extends Strategy {
     private readonly client: OAuth2Client;
     private readonly verifyCb: VerifyCallback;
 
-    constructor(options: IGoogleOptions, verifyCb: any) {
+    constructor(options: IGoogleOptions, verifyCb: VerifyCallback) {
         if (!options.clientID) {
             throw new TypeError('GoogleStrategy requires clientID');
-        }
-    
-        if (!options.clientSecret) {
-            throw new TypeError('GoogleStrategy requried clientSecret');
         }
 
         super();
         this.options = options;
         this.verifyCb = verifyCb;
         this.client = new OAuth2Client({
-            clientSecret: options.clientSecret,
             clientId: options.clientID,
         })
     }
@@ -40,16 +34,28 @@ export class GoogleStrategy extends Strategy {
     async authenticate(req: ExpressReq) {
         const idToken = this.options.tokenFromRequest ? this.options.tokenFromRequest(req) : req.body.idToken;
         
-        const ticket = await this.client.verifyIdToken({
-            idToken,
-            audience: this.options.clientID,
-        });
+        try {
+            const ticket = await this.client.verifyIdToken({
+                idToken,
+                audience: this.options.clientID,
+            });
+    
+            const payload = ticket.getPayload();
+            const verified = (err: Error, user: any, info: any) => {
+                if (err) return this.error(err);
+                if (!user) return this.fail(info);
+                return this.success(user, info);
+            }
 
-        const payload = ticket.getPayload();
-        if (!payload) {
-            throw Error('No payload data');
+            verified.bind(this);
+
+            if (!payload) {
+                throw Error('No payload data');
+            }
+
+            this.verifyCb(payload, verified);
+        } catch (err) {
+            this.fail(err, 401);
         }
-
-        this.verifyCb(payload);
     }
 }
