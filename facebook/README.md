@@ -11,7 +11,7 @@ Easy to use Facebook strategy. Made with backend APIs in mind.
 
 - `apiVersion` (default: `v14.0`) - you can provide specific Graph API version. Strategy is tested by default on `v14.0`.
 
-- `tokenFromRequest` (optional) - strategy will use provided function to extract access token.
+- `tokenFromRequest` (optional) - strategy will use provided function to extract access token from request.
 ```ts
 function getAccessToken(req: Request) {
   return req.query.accessToken;
