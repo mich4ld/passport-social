@@ -11,7 +11,7 @@ type VerifyCallback = (profile: any, verified: any) => any;
 
 export class FacebookStrategy extends Strategy {
     public readonly name = "facebook";
-    private readonly fields = ['id', 'email', 'name'];
+    private readonly fields = ['id', 'email', 'name', 'picture{url}'];
 
     constructor(
         private options: IFacebookOptions, 
@@ -24,6 +24,20 @@ export class FacebookStrategy extends Strategy {
         super();
     }
 
+    private validate(accessToken: unknown) {
+        if (!accessToken) {
+            throw Error('accessToken is required');
+        }
+
+        if (typeof accessToken !== 'string') {
+            throw Error('accessToken must be string');
+        }
+
+        if (accessToken.trim().length < 1) {
+            throw Error('accessToken must be not empty string');
+        }
+    }
+
     async authenticate(req: Request) {
         const accessToken = this.options.tokenFromRequest ? 
             this.options.tokenFromRequest(req) : req.body.accessToken;
@@ -31,6 +45,8 @@ export class FacebookStrategy extends Strategy {
         const url = "https://graph.facebook.com/me";
         
         try {
+            this.validate(accessToken);
+
             const result = await axios.get(url, {
                 params: {
                     'access_token': accessToken,
