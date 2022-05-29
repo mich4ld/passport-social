@@ -24,7 +24,7 @@ export class FacebookStrategy extends Strategy {
         super();
     }
 
-    private validate(accessToken: unknown) {
+    private validateToken(accessToken: unknown) {
         if (!accessToken) {
             throw Error('accessToken is required');
         }
@@ -45,7 +45,7 @@ export class FacebookStrategy extends Strategy {
         const url = "https://graph.facebook.com/me";
         
         try {
-            this.validate(accessToken);
+            this.validateToken(accessToken);
 
             const result = await axios.get(url, {
                 params: {
