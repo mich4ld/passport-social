@@ -5,6 +5,7 @@ import axios from 'axios';
 export interface IFacebookOptions {
     appID: string;
     tokenFromRequest: any;
+    apiVersion?: string;
 }
 
 type VerifyCallback = (profile: any, verified: any) => any;
@@ -12,6 +13,7 @@ type VerifyCallback = (profile: any, verified: any) => any;
 export class FacebookStrategy extends Strategy {
     public readonly name = "facebook";
     private readonly fields = ['id', 'email', 'name', 'picture{url}'];
+    private apiUrl: string;
 
     constructor(
         private options: IFacebookOptions, 
@@ -22,6 +24,7 @@ export class FacebookStrategy extends Strategy {
         }
 
         super();
+        this.apiUrl = `https://graph.facebook.com/${options.apiVersion || 'v14.0'}/me`;
     }
 
     private validateToken(accessToken: unknown) {
@@ -41,13 +44,11 @@ export class FacebookStrategy extends Strategy {
     async authenticate(req: Request) {
         const accessToken = this.options.tokenFromRequest ? 
             this.options.tokenFromRequest(req) : req.body.accessToken;
-
-        const url = "https://graph.facebook.com/me";
         
         try {
             this.validateToken(accessToken);
 
-            const result = await axios.get(url, {
+            const result = await axios.get(this.apiUrl, {
                 params: {
                     'access_token': accessToken,
                     'fields': this.fields.join(','),
