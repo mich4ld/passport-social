@@ -1,7 +1,7 @@
 ### Untested and not ready to use module - in early stage of development!
 
 ## Facebook strategy for Passport.js
-Simple to use Facebook strategy. Made with backend APIs in mind.
+Easy to use Facebook strategy. Made with backend APIs in mind.
 
 ### Options
 - `appSecret` (optional) - if provided, strategy will send request with `appsecret_proof` parameter. Enable `Require App Secret` in `Advanced Settings` if you want restrict your Graph API calls (more info: https://developers.facebook.com/docs/graph-api/securing-requests%20/). </br>
