@@ -9,11 +9,22 @@ export interface IFacebookOptions {
     apiVersion?: string;
 }
 
+export interface IFacebookProfile {
+    id: string;
+    email: string;
+    name: string;
+    picture: {
+        data: {
+            url: string;
+        }
+    }
+}
+
 interface IParams {
     [x: string]: string;
 }
 
-type VerifyCallback = (profile: any, verified: any) => any;
+type VerifyCallback = (profile: IFacebookProfile, verified: any) => any;
 
 export class FacebookStrategy extends Strategy {
     public readonly name = "facebook";
@@ -57,20 +68,20 @@ export class FacebookStrategy extends Strategy {
                 params['appsecret_proof'] = generateProof(accessToken, this.options.appSecret);
             }
 
-            const result = await axios.get(this.apiUrl, { params });
+            const result = await axios.get<IFacebookProfile>(this.apiUrl, { params });
     
             const verified = (err: Error, user: any, info: any) => {
                 if (err) return this.error(err);
                 if (!user) return this.fail(info);
                 return this.success(user, info);
             }
-    
+            
             verified.bind(this);
     
             if (!result.data) {
                 throw new Error('No payload data');
             }
-    
+            
             this.verifyCb(result.data, verified);
         } catch (err) {
             this.fail(err, 401);

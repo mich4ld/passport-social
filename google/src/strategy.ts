@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-strategy';
-import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { Request } from 'express';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
 
 type VerifyCallback = (payload: TokenPayload, verified: any) => any;
 
@@ -44,7 +44,7 @@ export class GoogleStrategy extends Strategy {
         
         try {
             this.validateCsrfToken(req);
-
+            
             const ticket = await this.client.verifyIdToken({
                 idToken,
                 audience: this.options.clientID,
