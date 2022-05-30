@@ -6,7 +6,7 @@ type VerifyCallback = (payload: TokenPayload, verified: any) => any;
 
 export interface IGoogleOptions {
     clientID: string;
-    csrfCheck: boolean;
+    csrfCheck?: boolean;
 }
 
 export class GoogleStrategy extends Strategy {
@@ -40,6 +40,20 @@ export class GoogleStrategy extends Strategy {
         }
     }
 
+    private validateToken(idToken: unknown) {
+        if (!idToken) {
+            throw Error('accessToken is required');
+        }
+
+        if (typeof idToken !== 'string') {
+            throw Error('accessToken must be string');
+        }
+
+        if (idToken.trim().length < 1) {
+            throw Error('accessToken must be not empty string');
+        }
+    }
+
     async authenticate(req: Request) {
         const idToken = req.body.credential;
         
@@ -47,6 +61,8 @@ export class GoogleStrategy extends Strategy {
             if (this.options.csrfCheck) {
                 this.validateCsrfToken(req);
             }
+
+            this.validateToken(idToken);
             
             const ticket = await this.client.verifyIdToken({
                 idToken,
