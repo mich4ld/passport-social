@@ -5,14 +5,14 @@ require('dotenv').config();
 
 const app = express();
 
-const googleStrategy = require('@mich4l/passport-google');
+const GoogleStrategy = require('@mich4l/passport-google').Strategy;
+const Facebooktrategy = require('@mich4l/passport-facebook').Strategy;
 
 app.use(cors())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-console.log(googleStrategy);
-passport.use(new googleStrategy.Strategy({
+passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID
 }, (payload, verified) => {
     console.log(payload);
@@ -20,7 +20,22 @@ passport.use(new googleStrategy.Strategy({
     return verified(null, payload);
 }));
 
+passport.use(new Facebooktrategy({
+}, (payload, verified) => {
+    console.log(payload);
+
+    return verified(null, payload);
+}));
+
+
+
 app.post('/auth/google', passport.authenticate('google', {
+    session: false,
+}), (req, res) => {
+    res.send('Success');
+});
+
+app.post('/auth/facebook', passport.authenticate('facebook', {
     session: false,
 }), (req, res) => {
     res.send('Success');
