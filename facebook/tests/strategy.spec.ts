@@ -13,6 +13,26 @@ describe('Test strategy', () => {
         }).not.toThrow();
     });
 
+    it('should fail undefined accessToken', () => {
+        const mockRequest = {
+            body: {}
+        }
+
+        const strategy = new Strategy({}, console.log);
+        expect(strategy.authenticate(mockRequest as Request)).rejects.toThrow();
+    })
+
+    it('should fail blank accessToken', () => {
+        const mockRequest = {
+            body: {
+                accessToken: ""
+            }
+        }
+
+        const strategy = new Strategy({}, console.log);
+        expect(strategy.authenticate(mockRequest as Request)).rejects.toThrow();
+    })
+
     it('should successfuly return facebook profile', async () => {
         const accessToken = process.env.TOKEN; // provide your own token from Facebook Graph playground. Run TOKEN={your_token} yarn test
 
