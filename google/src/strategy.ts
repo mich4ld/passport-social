@@ -6,6 +6,7 @@ type VerifyCallback = (payload: TokenPayload, verified: any) => any;
 
 export interface IGoogleOptions {
     clientID: string;
+    csrfCheck: boolean;
 }
 
 export class GoogleStrategy extends Strategy {
@@ -43,7 +44,9 @@ export class GoogleStrategy extends Strategy {
         const idToken = req.body.credential;
         
         try {
-            this.validateCsrfToken(req);
+            if (this.options.csrfCheck) {
+                this.validateCsrfToken(req);
+            }
             
             const ticket = await this.client.verifyIdToken({
                 idToken,

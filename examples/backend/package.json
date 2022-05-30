@@ -1,0 +1,26 @@
+{
+  "name": "backend-example",
+  "version": "1.0.0",
+  "description": "Backend example with passport social providers",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "test",
+    "example",
+    "social",
+    "passport",
+    "strategies"
+  ],
+  "author": "mich4ld",
+  "license": "MIT",
+  "dependencies": {
+    "@mich4l/passport-facebook": "^1.0.7",
+    "@mich4l/passport-google": "^1.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "passport": "^0.6.0"
+  }
+}
