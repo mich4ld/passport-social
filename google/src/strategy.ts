@@ -17,11 +17,11 @@ export class GoogleStrategy extends Strategy {
         private readonly options: IGoogleOptions, 
         private readonly verifyCb: VerifyCallback
     ) {
+        super();
         if (!options || !options.clientID) {
             throw new TypeError('GoogleStrategy requires clientID');
         }
-
-        super();
+        
         this.client = new OAuth2Client({
             clientId: options.clientID,
         })

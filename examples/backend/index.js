@@ -5,19 +5,15 @@ require('dotenv').config();
 
 const app = express();
 
-const {GoogleStrategy} = require('@mich4l/passport-google');
+const googleStrategy = require('@mich4l/passport-google');
 
 app.use(cors())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    tokenFromRequest: (req) => {
-        console.log(req.body);
-
-        return req.body.credential;
-    }
+console.log(googleStrategy);
+passport.use(new googleStrategy.Strategy({
+    clientID: process.env.GOOGLE_CLIENT_ID
 }, (payload, verified) => {
     console.log(payload);
 
