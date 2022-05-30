@@ -1,6 +1,6 @@
 {
   "name": "@mich4l/passport-facebook",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "keywords": [
     "passport",
     "facebook",
@@ -19,7 +19,7 @@
   "main": "dist/index.js",
   "author": "mich4ld",
   "scripts": {
-    "push": "tsc && yarn publish --access public",
+    "push": "tsc --build tsconfig.build.json && yarn publish --access public",
     "test": "jest"
   },
   "license": "MIT",
