@@ -1,6 +1,6 @@
 {
   "name": "@mich4l/passport-google",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Passport strategy for Google",
   "keywords": [
     "passport",
@@ -20,7 +20,7 @@
     "dist"
   ],
   "scripts": {
-    "push": "tsc && yarn publish --access public",
+    "push": "tsc --build tsconfig.build.json && yarn publish --access public",
     "test": "jest"
   },
   "dependencies": {
