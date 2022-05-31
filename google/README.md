@@ -1,7 +1,7 @@
 ### Untested and not ready to use module - in early stage of development!
 
 ## Google strategy for Passport.js
-Easy to use Google strategy. It's just simply **Sign In With Google** implementation (https://developers.google.com/identity/gsi/web/guides/verify-google-id-token).
+Easy to use Google strategy. It's just **Sign In With Google** implementation (https://developers.google.com/identity/gsi/web/guides/verify-google-id-token).
 
 ### Options
 - `clientID` (required) - required for idToken verification.
