@@ -5,7 +5,7 @@ import { generateProof } from './utils';
 
 export interface IFacebookOptions {
     appSecret?: string;
-    tokenFromRequest?: any;
+    tokenFromRequest?: (req: Request) => string;
     apiVersion?: string;
 }
 
@@ -54,8 +54,9 @@ export class FacebookStrategy extends Strategy {
     }
 
     async authenticate(req: Request) {
-        const accessToken = this.options.tokenFromRequest ? 
-            this.options.tokenFromRequest(req) : req.body.accessToken;
+        const accessToken = this.options.tokenFromRequest 
+            ? this.options.tokenFromRequest(req) 
+            : req.body.accessToken;
         
         try {
             this.validateToken(accessToken);

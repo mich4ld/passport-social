@@ -1,12 +1,14 @@
 import { Strategy } from 'passport-strategy';
 import { Request } from 'express';
-import { OAuth2Client, TokenPayload } from 'google-auth-library';
+import { OAuth2Client } from 'google-auth-library';
 
-type VerifyCallback = (payload: TokenPayload, verified: any) => any;
+type VerifyCallback = ((...args: any) => void)
 
-export interface IGoogleOptions {
+export interface GoogleStrategyOptions {
     clientID: string;
+    tokenFromRequest?: (req: Request) => string;
     csrfCheck?: boolean;
+    passReqToCallback?: boolean;
 }
 
 export class GoogleStrategy extends Strategy {
@@ -14,7 +16,7 @@ export class GoogleStrategy extends Strategy {
     private readonly client: OAuth2Client;
 
     constructor(
-        private readonly options: IGoogleOptions, 
+        private readonly options: GoogleStrategyOptions, 
         private readonly verifyCb: VerifyCallback
     ) {
         super();
@@ -24,7 +26,7 @@ export class GoogleStrategy extends Strategy {
         
         this.client = new OAuth2Client({
             clientId: options.clientID,
-        })
+        });
     }
 
     private validateCsrfToken(req: Request) {
@@ -55,7 +57,9 @@ export class GoogleStrategy extends Strategy {
     }
 
     async authenticate(req: Request) {
-        const idToken = req.body.credential;
+        const idToken = this.options.tokenFromRequest 
+            ? this.options.tokenFromRequest(req)
+            : req.body.credential;
         
         try {
             if (this.options.csrfCheck) {
@@ -82,7 +86,12 @@ export class GoogleStrategy extends Strategy {
                 throw Error('No payload data');
             }
 
-            this.verifyCb(payload, verified);
+            if (this.options.passReqToCallback) {
+                this.verifyCb(req, payload, verified);
+            } else {
+                this.verifyCb(payload, verified);
+            }
+            
         } catch (err) {
             this.fail(err, 401);
         }

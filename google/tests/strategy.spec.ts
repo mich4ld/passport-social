@@ -1,5 +1,5 @@
 import { TokenPayload } from 'google-auth-library';
-import { Strategy } from '../src';
+import { GoogleStrategyOptions, IGoogleProfile, Strategy } from '../src';
 import { Request } from 'express';
 import { config } from 'dotenv';
 config();
@@ -18,24 +18,35 @@ describe('Strategy test', () => {
 
     it('should return profile', async () => {
         const mockRequest = {
-            body: { credential: process.env.TOKEN }
+            body: { idToken: process.env.TOKEN }
         }
-        const profile = await fakeProfileRequest(mockRequest);
+        const profile = await fakeProfileRequest(mockRequest, {
+            tokenFromRequest(req) {
+                expect(req.body.idToken).toEqual(mockRequest.body.idToken);
+                return req.body.idToken;
+            },
+        });
+
         expect(profile).toBeDefined();
         expect(typeof profile.name).toEqual('string');
         expect(typeof profile.sub).toEqual('string');
     })
 })
 
-function fakeProfileRequest(req: object) {
-    return new Promise<TokenPayload>((resolve, reject) => {
-        const strategy = new Strategy({
-            clientID: process.env.CLIENT_ID as string,
-        }, (profile) => {
-            resolve(profile);
-        });
-    
+function fakeProfileRequest(req: object, options: Partial<GoogleStrategyOptions> = {}) {
+    return new Promise<IGoogleProfile>((resolve, reject) => { 
         try {
+            const strategy = new Strategy({
+                clientID: process.env.CLIENT_ID as string,
+                ...options
+            }, (profile) => {
+                resolve(profile);
+            });
+
+            strategy.fail = (challange: any) => {
+                reject(challange);
+            }
+
             strategy.authenticate(req as Request);
         } catch (err) {
             reject(err);

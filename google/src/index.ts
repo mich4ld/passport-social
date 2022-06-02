@@ -1,4 +1,6 @@
 export {
     GoogleStrategy as Strategy,
-    IGoogleOptions,
+    GoogleStrategyOptions,
 } from './strategy';
+
+export { TokenPayload as IGoogleProfile } from 'google-auth-library';
