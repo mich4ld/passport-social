@@ -7,6 +7,7 @@ export interface IFacebookOptions {
     appSecret?: string;
     tokenFromRequest?: (req: Request) => string;
     apiVersion?: string;
+    passReqToCallback?: boolean;
 }
 
 export interface IFacebookProfile {
@@ -24,7 +25,7 @@ interface IParams {
     [x: string]: string;
 }
 
-type VerifyCallback = (profile: IFacebookProfile, verified: any) => any;
+type VerifyCallback = (...args: any[]) => void;
 
 export class FacebookStrategy extends Strategy {
     public readonly name = "facebook";
@@ -82,8 +83,14 @@ export class FacebookStrategy extends Strategy {
             if (!result.data) {
                 throw new Error('No payload data');
             }
+
+            if (this.options.passReqToCallback) {
+                this.verifyCb(req, result.data, verified);
+            } else {
+                this.verifyCb(result.data, verified);
+            }
             
-            this.verifyCb(result.data, verified);
+            
         } catch (err) {
             this.fail(err, 401);
         }
