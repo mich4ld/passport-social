@@ -8,7 +8,7 @@ Easy to use Google strategy. It's just **Sign In With Google** implementation (h
 
 - `csrfCheck` (optional) - strategy will validate `g_csrf_token`. **False** by default.
 
-- `passReqToCallback` (optional) - passing **Request** object to callback
+- `passReqToCallback` (optional) - strategy will pass **Request** object to callback.
 
 - `tokenFromRequest` (optional) - strategy will use provided function to extract id token from request.
 
